@@ -3,253 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web.com | Professional Social Network</title>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Ramazon Muborak | To'liq Duolar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000; --surface: #121212; --border: #262626;
-            --accent: #0095f6; --text: #fff; --text-dim: #a8a8a8;
-            --grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            --gold: #fcc200;
+            --dark-gold: #b8860b;
+            --bg-deep: #020611;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
-        body { background: var(--bg); color: var(--text); }
-        
-        /* Layout */
-        header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; }
-        .nav-inner { max-width: 975px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; align-items: center; }
-        
-        .search-container { position: relative; width: 250px; }
-        .search-input { width: 100%; padding: 8px 12px; background: #262626; border-radius: 8px; border: none; color: white; }
-        .search-results { position: absolute; top: 40px; width: 100%; background: #262626; border-radius: 8px; display: none; }
+        body {
+            margin: 0;
+            background: var(--bg-deep);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-        main { max-width: 935px; margin: 80px auto 0; display: grid; grid-template-columns: 1fr 320px; gap: 30px; }
-        
-        /* Feed & Stories */
-        .stories-bar { display: flex; gap: 15px; overflow-x: auto; padding: 15px; background: var(--surface); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .story-node { min-width: 66px; text-align: center; cursor: pointer; }
-        .ring { width: 64px; height: 64px; border-radius: 50%; padding: 2px; background: var(--grad); }
-        .ring img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #000; object-fit: cover; }
+        /* Fon elementlari */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -2;
+        }
 
-        /* Posts UI */
-        .post { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 24px; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
-        .post-media { width: 100%; min-height: 400px; background: #000; position: relative; }
-        .post-media video, .post-media img { width: 100%; max-height: 600px; display: block; }
-        
-        /* Reels (16:9 aspect ratio) */
-        .reels-container { display: none; height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
-        .reel-item { height: 100vh; scroll-snap-align: start; position: relative; display: flex; justify-content: center; background: #000; }
-        .reel-item video { height: 100%; aspect-ratio: 9/16; object-fit: cover; }
+        /* Hilol oy */
+        .moon {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            background: transparent;
+            border-radius: 50%;
+            box-shadow: -15px 10px 0 0 var(--gold);
+            filter: drop-shadow(0 0 15px var(--gold));
+            z-index: 1;
+        }
 
-        /* Profile Section */
-        #profile-page { display: none; padding: 20px; }
-        .profile-info { display: flex; gap: 40px; align-items: center; margin-bottom: 50px; }
-        .p-avatar { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
-        .p-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .p-item { aspect-ratio: 1/1; background: #1a1a1a; overflow: hidden; cursor: pointer; }
-        .p-item img, .p-item video { width: 100%; height: 100%; object-fit: cover; }
+        /* Fonuslar */
+        .lantern {
+            position: absolute;
+            width: 50px;
+            height: 80px;
+            background: url('https://cdn-icons-png.flaticon.com/512/2311/2311531.png') no-repeat center;
+            background-size: contain;
+            filter: drop-shadow(0 0 8px var(--gold));
+            animation: swing 3s infinite ease-in-out alternate;
+            z-index: 1;
+        }
+        .l-left { left: 10%; top: -10px; }
+        .l-right { right: 10%; top: -10px; animation-delay: 0.5s; }
 
-        /* Global Modals */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: none; place-items: center; }
-        .modal-card { width: 400px; background: var(--surface); border-radius: 12px; padding: 20px; }
-        .btn-blue { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 600; }
-        
-        /* Progress Bar */
-        #upload-progress { width: 0%; height: 4px; background: var(--accent); transition: 0.3s; margin-top: 10px; }
+        @keyframes swing {
+            from { transform: rotate(-10deg); }
+            to { transform: rotate(10deg); }
+        }
+
+        /* Asosiy karta */
+        .card {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(252, 194, 0, 0.3);
+            border-radius: 40px;
+            padding: 40px 30px;
+            margin: 100px 0 50px 0;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        .title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4rem;
+            color: var(--gold);
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(252, 194, 0, 0.5);
+        }
+
+        .dua-box {
+            background: rgba(212, 175, 55, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 3px solid var(--gold);
+            border-right: 3px solid var(--gold);
+        }
+
+        .dua-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .arabic {
+            font-family: 'Amiri', serif;
+            font-size: 1.8rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            direction: rtl;
+        }
+
+        .latin {
+            font-size: 1rem;
+            color: #ddd;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .meaning {
+            font-size: 0.9rem;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .main-msg {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #eee;
+            margin: 30px 0;
+            font-weight: 300;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 30px 0;
+        }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" style="position:fixed; inset:0; background:#000; z-index:9000; display:flex; align-items:center; justify-content:center;">
-        <div class="modal-card" style="text-align:center;">
-            <h1 style="font-size:35px; margin-bottom:20px;">Web.com</h1>
-            <input type="email" id="email" placeholder="Email" style="width:100%; padding:12px; margin-bottom:10px; background:#1a1a1a; color:white; border:1px solid var(--border);">
-            <input type="password" id="pass" placeholder="Parol" style="width:100%; padding:12px; margin-bottom:10px; background:#1a1a1a; color:white; border:1px solid var(--border);">
-            <button class="btn-blue" onclick="authMod.handleAuth()">Kirish / Ro'yxatdan o'tish</button>
+    <div class="stars"></div>
+    <div class="moon"></div>
+    <div class="lantern l-left"></div>
+    <div class="lantern l-right"></div>
+
+    <div class="card">
+        <div class="dua-box">
+            <span class="dua-label">Saharlik (Og'iz yopish)</span>
+            <div class="arabic">نَوَيْتُ أَنْ أَصُومَ صَوْمَ شَهْرِ رَمَضَانَ مِنَ الْفَجْرِ إِلَى الْمَغْرِبِ، خَالِصًا لِلَّهِ تَعَالَى</div>
+            <div class="latin">"Navaytu an asuma sovma shahri ramazona minal fajri ilal mag'ribi, xolisan lillahi ta'ala."</div>
+            <div class="meaning">Ma'nosi: Ramazon oyining ro'zasini subhdan kun botguncha Alloh uchun xolis tutishni niyat qildim.</div>
+        </div>
+
+        <h1 class="title">Ramazon Muborak</h1>
+        
+        <p class="main-msg">
+            Qalbingiz iymon nuriga, xonadoningiz esa Ramazon barakasiga to'lsin. 
+            Tutgan ro'zalaringiz va qilgan ibodatlaringiz ajru-savoblarga boy bo'lsin!
+        </p>
+
+        <hr>
+
+        <div class="dua-box">
+            <span class="dua-label">Iftorlik (Og'iz ochish)</span>
+            <div class="arabic">اللَّهُمَّ لَكَ صُمْتُ وَبِكَ آمَنْتُ وَعَلَيْكَ تَوَكَّلْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ</div>
+            <div class="latin">"Allohumma laka sumtu va bika amantu va 'alayka tavakkaltu va 'ala rizqika aftartu."</div>
+            <div class="meaning">Ma'nosi: Allohim, Sen uchun ro'za tutdim, Senga iymon keltirdim, Senga tavakkal qildim va bergan rizqing bilan iftor qildim.</div>
         </div>
     </div>
 
-    <header>
-        <div class="nav-inner">
-            <h2 onclick="viewMod.show('feed')" style="cursor:pointer;">Web.com</h2>
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="Qidiruv..." oninput="searchMod.find(this.value)">
-                <div class="search-results" id="search-box"></div>
-            </div>
-            <div class="nav-icons">
-                <i class="fas fa-home" onclick="viewMod.show('feed')"></i>
-                <i class="fab fa-playstation" onclick="viewMod.show('reels')"></i>
-                <i class="far fa-plus-square" onclick="uiMod.openModal('post-modal')"></i>
-                <i class="far fa-user" onclick="viewMod.show('profile')"></i>
-            </div>
-        </div>
-    </header>
-
-    <main id="view-feed">
-        <section>
-            <div class="stories-bar" id="story-row"></div>
-            <div id="feed-items"></div>
-        </section>
-        <aside id="sidebar">
-            </aside>
-    </main>
-
-    <div id="view-reels" class="reels-container"></div>
-
-    <div id="view-profile" style="max-width:935px; margin:80px auto;">
-        <div class="profile-info">
-            <img src="https://via.placeholder.com/150" class="p-avatar" id="my-p-img">
-            <div>
-                <h2 id="my-p-name">Username</h2><br>
-                <button class="btn-blue" style="background:#262626;" onclick="uiMod.openModal('edit-modal')">Profilni tahrirlash</button>
-            </div>
-        </div>
-        <div class="p-grid" id="my-posts"></div>
-    </div>
-
-    <div class="modal" id="post-modal">
-        <div class="modal-card">
-            <h3>Yangi Post</h3><br>
-            <input type="file" id="file-input" accept="video/*,image/*" style="margin-bottom:10px;">
-            <textarea id="post-caption" placeholder="Tavsif..." style="width:100%; height:100px; background:#1a1a1a; color:white; padding:10px;"></textarea>
-            <div id="upload-progress"></div>
-            <button class="btn-blue" id="upload-btn" onclick="postMod.upload()">Yuklash</button>
-            <button onclick="uiMod.closeModal('post-modal')" style="color:var(--text-dim); margin-top:10px; width:100%;">Bekor qilish</button>
-        </div>
-    </div>
-
-    <script>
-        // FIREBASE CONFIGURATION (O'zingiznikini qo'ying)
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_ID",
-            appId: "YOUR_APP_ID"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-        const storage = firebase.storage();
-
-        // 1. AUTH MODULE
-        const authMod = {
-            handleAuth: async () => {
-                const e = document.getElementById('email').value;
-                const p = document.getElementById('pass').value;
-                try {
-                    await auth.signInWithEmailAndPassword(e, p);
-                } catch {
-                    await auth.createUserWithEmailAndPassword(e, p);
-                    await db.collection('users').doc(auth.currentUser.uid).set({
-                        username: e.split('@')[0],
-                        avatar: '',
-                        uid: auth.currentUser.uid
-                    });
-                }
-            }
-        };
-
-        // 2. VIEW CONTROLLER
-        const viewMod = {
-            show: (view) => {
-                const views = ['view-feed', 'view-reels', 'view-profile'];
-                views.forEach(v => document.getElementById(v).style.display = 'none');
-                document.getElementById('view-' + view).style.display = view === 'feed' ? 'grid' : 'block';
-                if(view === 'feed') postMod.renderFeed();
-                if(view === 'reels') postMod.renderReels();
-                if(view === 'profile') profileMod.renderMyProfile();
-            }
-        };
-
-        // 3. POST & REELS MODULE
-        const postMod = {
-            upload: async () => {
-                const file = document.getElementById('file-input').files[0];
-                const caption = document.getElementById('post-caption').value;
-                if(!file) return alert("Fayl tanlang!");
-
-                const btn = document.getElementById('upload-btn');
-                btn.disabled = true;
-                
-                const ref = storage.ref(`posts/${Date.now()}_${file.name}`);
-                const task = ref.put(file);
-
-                task.on('state_changed', (snapshot) => {
-                    const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    document.getElementById('upload-progress').style.width = prog + '%';
-                }, null, async () => {
-                    const url = await task.snapshot.ref.getDownloadURL();
-                    await db.collection('posts').add({
-                        url: url,
-                        type: file.type.includes('video') ? 'video' : 'image',
-                        caption: caption,
-                        user: auth.currentUser.uid,
-                        username: auth.currentUser.email.split('@')[0],
-                        likes: [],
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    uiMod.closeModal('post-modal');
-                    viewMod.show('feed');
-                    btn.disabled = false;
-                });
-            },
-
-            renderFeed: async () => {
-                const snap = await db.collection('posts').orderBy('createdAt', 'desc').get();
-                const container = document.getElementById('feed-items');
-                container.innerHTML = snap.docs.map(doc => {
-                    const p = doc.data();
-                    return `
-                        <div class="post">
-                            <div class="post-header"><b>${p.username}</b></div>
-                            <div class="post-media">
-                                ${p.type === 'video' ? `<video src="${p.url}" controls loop></video>` : `<img src="${p.url}">`}
-                            </div>
-                            <div class="post-details">
-                                <i class="far fa-heart" onclick="postMod.like('${doc.id}')"></i><br>
-                                <b>${p.likes.length} likes</b><br>
-                                <b>${p.username}</b> ${p.caption}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            },
-
-            renderReels: async () => {
-                const snap = await db.collection('posts').where('type', '==', 'video').get();
-                const container = document.getElementById('view-reels');
-                container.innerHTML = snap.docs.map(doc => `
-                    <div class="reel-item">
-                        <video src="${doc.data().url}" autoplay loop muted></video>
-                    </div>
-                `).join('');
-            }
-        };
-
-        // 4. UI MODULE
-        const uiMod = {
-            openModal: (id) => document.getElementById(id).style.display = 'grid',
-            closeModal: (id) => document.getElementById(id).style.display = 'none'
-        };
-
-        // LISTEN FOR AUTH CHANGE
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                document.getElementById('auth-screen').style.display = 'none';
-                viewMod.show('feed');
-            } else {
-                document.getElementById('auth-screen').style.display = 'flex';
-            }
-        });
-
-    </script>
 </body>
 </html>
